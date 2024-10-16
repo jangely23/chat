@@ -1,13 +1,44 @@
+
 const socket = io();
 
-function checkSocket() {
+// Verifica el estado de la conexión false o true
+function checkSocketStatus() {
     console.log("Estado del socket: ", socket.connected );
 }
+
+// Emitir eventos personalizados desde el cliente webSocket
+const emitToServer = document.querySelector("#emitToServer")
+emitToServer.addEventListener("click", (e) => {
+    socket.emit("server", "Hola Servidor")
+})
+
+// Emitir eventos personalizados a un cliente especifiico desde el cliente del webSocket
+const emitToLast = document.querySelector("#emitToLast")
+emitToLast.addEventListener("click", (e) => {
+    socket.emit("lastConnection", "Hola Ultimo")
+})
+
+// Recibe la emisión del evento personalizado a un cliente desde el server
+socket.on("lastConnectionGreeting", data => { console.log(data) });
+
+// Recibir eventos personalizados webSocket server
+socket.on('welcome', data =>{
+    console.log(data);
+    const text = document.querySelector("#text")
+    text.textContent = data;
+})
+
+// Recibe un evento perdonalizado general para todos los clientes
+socket.on("everyone", data => { console.log(data)})
+
+//**********************************************
+// Procesa los eventos basicos del WebSocket
+//**********************************************
 
 socket.on('connect', (msg) => {
     console.log("el socket connected");
     console.log(socket.id);
-    checkSocket();
+    checkSocketStatus();
 })
 
 socket.on('connect_error', (err) => {
@@ -15,9 +46,10 @@ socket.on('connect_error', (err) => {
     console.log(err);
 })
 
+
 socket.on('disconnect', () => {
     console.log("el socket disconnected");
-    checkSocket();
+    checkSocketStatus();
 })
 
 socket.io.on('reconnect_attempt', () => {
