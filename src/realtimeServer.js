@@ -3,10 +3,17 @@ module.exports = httpServer => {
     const io = new Server(httpServer);
 
     io.on("connection", (socket) => {
-        socket.on("message", (message) => {
+
+        const cookies = socket.handshake.headers.cookie;
+        const user = cookies.split("=").pop();
+
+        const date = new Date().toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric"});
+
+        socket.on("message", ({dataMessage}) => {
             io.emit("message", {
-                user: "jangely23",
-                message
+                user,
+                message: dataMessage,
+                date,
             });
         })
     })
