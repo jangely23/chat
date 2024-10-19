@@ -4,6 +4,8 @@ const realtimeServer = require("./realtimeServer")
 
 const path = require('path');
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+/*const expressValidator = require('express-validator');*/
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,6 +14,9 @@ const httpServer = createServer(app);
 app.set("port", process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+/*app.use(expressValidator());*/
 
 // Routes
 app.use( require('./routes') );
